@@ -34,22 +34,22 @@ class DireccionAdmin(BaseAdmin):
 
 @admin.register(roles)
 class RolesAdmin(BaseAdmin):
-    list_display = ("id", "nombre", "descripcion") + BASE_LIST
+    list_display = ("id", "nombre", "description") + BASE_LIST
     search_fields = ("nombre",)
 
 @admin.register(departamento)
 class DepartamentoAdmin(BaseAdmin):
-    list_display = ("id", "nombre", "descripcion") + BASE_LIST
+    list_display = ("id", "nombre", "description") + BASE_LIST
     search_fields = ("nombre",)
 
 @admin.register(cargo)
 class CargoAdmin(BaseAdmin):
-    list_display = ("id", "nombre", "descripcion") + BASE_LIST
+    list_display = ("id", "nombre", "description") + BASE_LIST
     search_fields = ("nombre",)
 
 @admin.register(forma_pago)
 class FormaPagoAdmin(BaseAdmin):
-    list_display = ("id", "nombre", "descripcion") + BASE_LIST
+    list_display = ("id", "nombre", "description") + BASE_LIST
     search_fields = ("nombre",)
 
 @admin.register(jornada)

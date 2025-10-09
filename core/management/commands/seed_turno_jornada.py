@@ -2,6 +2,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from core.models import turno_has_jornada, turno, jornada
+from datetime import time
 
 class Command(BaseCommand):
     help = "Siembra relaciones entre turnos y jornadas"
@@ -19,6 +20,24 @@ class Command(BaseCommand):
             if not jornadas.exists():
                 self.stdout.write(self.style.ERROR("No hay jornadas existentes. Ejecuta seed_jornadas primero."))
                 return
+
+            # Mapeo de nombres de turno a horarios reales
+            turno_map = {
+                "Turno Mañana": time(8, 0),
+                "Turno Tarde": time(9, 0),
+                "Turno Vespertino": time(14, 0),
+                "Turno Noche": time(22, 0),
+                "Turno Madrugada": time(0, 0),
+                "Turno Partido Mañana": time(7, 30),
+                "Turno Partido Tarde": time(13, 0),
+                "Turno Flexible Entrada": time(7, 0),
+                "Turno Flexible Salida": time(10, 0),
+                "Turno Ejecutivo": time(8, 30),
+                "Turno Comercial": time(10, 0),
+                "Turno 24/7 - Grupo A": time(6, 0),
+                "Turno 24/7 - Grupo B": time(14, 0),
+                "Turno 24/7 - Grupo C": time(22, 0),
+            }
 
             # Definir relaciones lógicas entre turnos y jornadas
             relaciones_data = [
@@ -83,17 +102,18 @@ class Command(BaseCommand):
 
             for relacion_data in relaciones_data:
                 try:
-                    # Buscar turno y jornada por nombre
-                    turno_obj = turnos.get(hora_entrada__icontains=relacion_data["turno_nombre"].split(" ")[1].lower())
+                    # Buscar turno por hora_entrada usando el mapeo
+                    hora_entrada_buscada = turno_map[relacion_data["turno_nombre"]]
+                    turno_obj = turnos.get(hora_entrada=hora_entrada_buscada)
+                    
+                    # Buscar jornada por nombre
                     jornada_obj = jornadas.get(nombre=relacion_data["jornada_nombre"])
                     
-                    # Crear la relación (unique_together evita duplicados)
+                    # Crear la relación
                     relacion_obj, created = turno_has_jornada.objects.get_or_create(
                         turno=turno_obj,
                         jornada=jornada_obj,
-                        defaults={
-                            "status": "ACTIVE"
-                        }
+                        defaults={"status": "ACTIVE"}
                     )
                     
                     if created:
@@ -103,9 +123,11 @@ class Command(BaseCommand):
                         self.stdout.write(f"Relación existente: {relacion_data['turno_nombre']} -> {relacion_data['jornada_nombre']}")
 
                 except turno.DoesNotExist:
-                    self.stdout.write(self.style.WARNING(f"Turno no encontrado: {relacion_data['turno_nombre']}"))
+                    self.stdout.write(self.style.WARNING(f"Turno no encontrado: {relacion_data['turno_nombre']} ({hora_entrada_buscada})"))
                 except jornada.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"Jornada no encontrada: {relacion_data['jornada_nombre']}"))
+                except KeyError:
+                    self.stdout.write(self.style.WARNING(f"Turno no mapeado: {relacion_data['turno_nombre']}"))
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f"Error creando relación {relacion_data['turno_nombre']} -> {relacion_data['jornada_nombre']}: {e}"))
 
