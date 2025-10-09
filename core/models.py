@@ -27,7 +27,7 @@ class direccion(BaseModel):
 
 class roles(BaseModel):
     nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=200, blank=True, null=True)
+    description = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         db_table = 'roles'
@@ -35,7 +35,7 @@ class roles(BaseModel):
 
 class departamento(BaseModel):
     nombre = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45, blank=True, null=True)
+    description = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         db_table = 'departamento'
@@ -43,7 +43,7 @@ class departamento(BaseModel):
 
 class cargo(BaseModel):
     nombre = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45, blank=True, null=True)
+    description = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         db_table = 'cargo'
@@ -132,7 +132,7 @@ class liquidacion(BaseModel):
 
 class forma_pago(BaseModel):
     nombre = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45, blank=True, null=True)
+    description = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         db_table = 'forma_pago'
