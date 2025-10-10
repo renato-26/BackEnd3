@@ -3,9 +3,7 @@ from .models import (
     cargo, departamento, direccion, forma_pago, jornada, roles, turno,
     empleado, cuenta_bancaria, contrato, liquidacion, pago, turno_has_jornada
 )
-
-
-
+from .forms import PagoForm
 
 # ---------- Helpers ----------
 BASE_READONLY = ("created_at", "updated_at")
@@ -25,13 +23,12 @@ class CuentaBancariaInline(admin.TabularInline):
 
 class PagoInline(admin.TabularInline):
     model = pago
+    form = PagoForm
     extra = 0
     fields = ("fecha_pago", "monto", "forma_pago", "comprobante", "estado", "status")
     readonly_fields = BASE_READONLY
 
-#---------valicdaciones----------
-from django.core.exceptions import ValidationError
-
+#---------acciones---------------
 @admin.action(description="Marcar seleccionados como activos")
 def make_active(modeladmin, request, queryset):
     queryset.update(status="ACTIVE")
@@ -39,6 +36,7 @@ def make_active(modeladmin, request, queryset):
 @admin.action(description="Marcar seleccionados como inactivos")
 def make_inactive(modeladmin, request, queryset):
     queryset.update(status="INACTIVE")
+
 
 # ---------- Catálogos ----------
 @admin.register(direccion)
@@ -146,3 +144,14 @@ class LiquidacionAdmin(BaseAdmin):
     search_fields = ("contrato__empleado__run", "est_contrato__empleado__user__username")
     list_filter = ("estado", "status")
     list_ordering = ("-periodo", "contrato__empleado__run")
+
+@admin.register(pago)
+class PagoAdmin(BaseAdmin):
+    list_display = ("id", "liquidacion", "fecha_pago", "monto", "forma_pago", "estado") + BASE_LIST
+    list_select_related = ("liquidacion", "forma_pago")
+    search_fields = ("liquidacion__contrato__empleado__run", "liquidacion__contrato__empleado__user__username")
+    list_filter = ("estado", "forma_pago", "status")
+    list_ordering = ("-fecha_pago", "liquidacion__contrato__empleado__run")
+    actions = [make_active, make_inactive]
+
+
