@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from core.scoping import ScopedFilterBackend
 
-# Create your views here.
+class DispositivoViewSet(ModelViewSet):
+    queryset = Dispositivo.objects.all()
+    serializer_class = DispositivoSerializer
+    filter_backends = [ScopedFilterBackend]  # añade, sin quitar tus otros filtros
+

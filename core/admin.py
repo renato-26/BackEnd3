@@ -4,6 +4,9 @@ from .models import (
     empleado, cuenta_bancaria, contrato, liquidacion, pago, turno_has_jornada
 )
 from .forms import PagoForm
+from core.scoping import _get_employee_for_user, _apply_scope
+
+
 
 
 # ---------- Helpers ----------
@@ -37,6 +40,17 @@ def make_active(modeladmin, request, queryset):
 @admin.action(description="Marcar seleccionados como inactivos")
 def make_inactive(modeladmin, request, queryset):
     queryset.update(status="INACTIVE")
+
+#---Scoping---#
+
+class ScopedAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        empleado = _get_employee_for_user(request.user)
+        return _apply_scope(qs, empleado)
+
 
 
 # ---------- Catálogos ----------
@@ -112,7 +126,7 @@ class EmpleadoAdmin(BaseAdmin):
     inlines = [CuentaBancariaInline]
 
 @admin.register(cuenta_bancaria)
-class CuentaBancariaAdmin(BaseAdmin):
+class CuentaBancariaAdmin(ScopedAdmin, BaseAdmin):
     list_display = ("id", "empleado", "banco", "tipo_cuenta", "numero_cuenta", "correo") + BASE_LIST
     list_select_related = ("empleado",)
     search_fields = ("empleado__run", "empleado__user__username", "banco", "numero_cuenta")
@@ -120,7 +134,7 @@ class CuentaBancariaAdmin(BaseAdmin):
     list_ordering = ("empleado__run", "banco")
 
 @admin.register(contrato)
-class ContratoAdmin(BaseAdmin):
+class ContratoAdmin(ScopedAdmin, BaseAdmin):
     list_display = (
         "id", "empleado", "departamento", "cargo",
         "fecha_inicio", "fecha_fin", "turno_has_jornada"
@@ -135,7 +149,7 @@ class ContratoAdmin(BaseAdmin):
     list_ordering = ("empleado__run", "fecha_inicio")
 
 @admin.register(liquidacion)
-class LiquidacionAdmin(BaseAdmin):
+class LiquidacionAdmin(ScopedAdmin, BaseAdmin):
     list_display = (
         "id", "contrato", "periodo", "fecha_pago",
         "imponible", "no_imponible", "tributable",
@@ -147,7 +161,7 @@ class LiquidacionAdmin(BaseAdmin):
     list_ordering = ("-periodo", "contrato__empleado__run")
 
 @admin.register(pago)
-class PagoAdmin(BaseAdmin):
+class PagoAdmin(ScopedAdmin, BaseAdmin):
     list_display = ("id", "liquidacion", "fecha_pago", "monto", "forma_pago", "estado") + BASE_LIST
     list_select_related = ("liquidacion", "forma_pago")
     search_fields = ("liquidacion__contrato__empleado__run", "liquidacion__contrato__empleado__user__username")
