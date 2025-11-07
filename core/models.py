@@ -151,3 +151,18 @@ class pago(BaseModel):
         db_table = 'pago'
         managed = True
 
+class ZonaTrabajo(BaseModel):
+    nombre = models.CharField(max_length=100)
+    area = models.CharField(max_length=100)
+    ubicacion = models.CharField(max_length=200)
+    supervisor = models.CharField(max_length=100)
+    notas = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'zona_trabajo'
+        managed = True
+        verbose_name = 'Zona de Trabajo'
+        verbose_name_plural = 'Zonas de Trabajo'
+
+    def __str__(self):
+        return f"{self.nombre} - {self.area}"
