@@ -43,7 +43,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5 class="card-title m-0">Mis liquidaciones</h5>
-              <a href="{% url 'liquidaciones' %}" class="btn btn-primary btn-sm mt-2">Ver todas las liquidaciones</a>
+              <a href="{% url 'liquidaciones' %}" class="btn btn-primary btn-sm mt-2">Ver mis liquidaciones</a>
               <a href="#" class="btn btn-outline-primary btn-sm">Descargar todo</a>
             </div>
             <div class="table-responsive">
@@ -148,7 +148,10 @@
                 <span class="badge text-bg-primary">Empleado</span>
               </div>
             </div>
-
+            <div class="mb-2">
+              <small class="text-muted d-block">Nacionalidad</small>
+              <span id="profileNationality">Chilena</span>
+            </div>
             <div class="mb-2">
               <small class="text-muted d-block">Dirección</small>
               <span id="profileAddress">Av. Siempre Viva 742, Santiago</span>
@@ -172,54 +175,56 @@
           <div class="card-body">
             <h6 class="text-uppercase text-muted mb-3">Accesos rápidos</h6>
             <div class="d-grid gap-2">
-              <a class="btn btn-outline-dark" href="#">Solicitar certificado</a>
               <a href="{% url 'contrato_empleado' %}" class="btn btn-outline-dark">Ver contrato</a>
-              <a class="btn btn-outline-dark" href="#">Enviar solicitud a RRHH</a>
             </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editModalLabel">Editar información personal</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editForm">
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="inNombre" value="Renato">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Apellido</label>
-              <input type="text" class="form-control" id="inApellido" value="Muñoz">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Dirección</label>
-              <input type="text" class="form-control" id="inDireccion" value="Av. Siempre Viva 742, Santiago">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" class="form-control" id="inTelefono" value="+56 9 1234 5678">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Correo</label>
-              <input type="email" class="form-control" id="inCorreo" value="renato.munoz@forneria.cl">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
-        </div>
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar información personal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="inNombre" value="Renato" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="inApellido" value="Muñoz" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nacionalidad</label>
+            <input type="text" class="form-control" id="inNacionalidad" value="Chilena" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="inDireccion" value="Av. Siempre Viva 742, Santiago">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-control" id="inTelefono" value="+56 9 1234 5678">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Correo</label>
+            <input type="email" class="form-control" id="inCorreo" value="renato.munoz@forneria.cl" readonly>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
       </div>
     </div>
   </div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

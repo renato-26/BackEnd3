@@ -50,6 +50,15 @@ def horario_jornada_page(request):
     return render(request, 'rrhh/horario_jornada.html')
 
 
+
+login_required
+def horario_page(request):
+    # visible para empleados; si quieres que admin también la vea, quita el if
+    if _rol_de(request.user) != 'empleado':
+        return redirect('dash_admin')
+    return render(request, 'rrhh/horario.html')
+
+
 @login_required
 def liquidacion_page(request):
     # visible para empleados
@@ -159,7 +168,7 @@ def contrato_empleado_page(request):
 @login_required
 def liquidaciones_admin_page(request):
     # Listado de liquidaciones para el admin
-    return render(request, 'rrhh/liquidacion.html')   # cambia el template si usas otro
+    return render(request, 'rrhh/liquidaciones_admin.html')   # cambia el template si usas otro
 
 def is_admin(u):  # solo staff entra al CRUD
     return u.is_authenticated and u.is_staff

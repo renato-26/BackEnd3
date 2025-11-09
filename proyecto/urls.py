@@ -14,7 +14,7 @@ urlpatterns = [
     path('dashboard-admin/', v.dashboard_admin, name='dash_admin'),
 
     # Empleado
-    path('dashboard/horarios/', v.horario_jornada_page, name='horarios'),
+    path('dashboard/horarios/', v.horario_page, name='horarios'),
     path('dashboard/liquidaciones/', v.liquidacion_page, name='liquidaciones'),
     path('dashboard/contrato/', v.contrato_empleado_page, name='contrato_empleado'),
 

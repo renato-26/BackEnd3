@@ -9,15 +9,9 @@
   <style>
     .brand { color:#dc3545; font-weight:700; }
     .table thead th { white-space: nowrap; }
-    /* --- NUEVO: centrado y mayor ancho --- */
-    .main-container {
-      max-width: 1100px; /* ajusta aquí el ancho máximo del contenido */
-      width: 100%;
-    }
   </style>
 </head>
 <body class="bg-light">
-
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
     <div class="container-fluid">
@@ -29,39 +23,80 @@
     </div>
   </nav>
 
-  <!-- Contenido principal centrado -->
-  <div class="container d-flex justify-content-center mt-4 mb-5">
-    <div class="main-container">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0">Mis liquidaciones</h4>
-        <div class="d-flex gap-2">
-          <a class="btn btn-outline-secondary btn-sm" href="{% url 'dash_admin' %}">Volver al dashboard</a>
-          <button class="btn btn-outline-primary btn-sm" id="btnDescargarTodo">Descargar todo</button>
+  <!-- Contenido -->
+  <div class="container-fluid py-4">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-2 col-md-3 d-none d-md-block">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title text-muted mb-3">NAVEGACIÓN</h6>
+            <ul class="nav nav-pills flex-column gap-2">
+              {% with n=request.resolver_match.url_name %}
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'dash_admin' %}active{% endif %}" href="{% url 'dash_admin' %}">
+                  <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'crud_cargo' %}active{% endif %}" href="{% url 'crud_cargo' %}">
+                  <i class="bi bi-briefcase me-2"></i>Gestión de Cargos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'contratos_admin' %}active{% endif %}" href="{% url 'contratos_admin' %}">
+                  <i class="bi bi-file-earmark-text me-2"></i>Contratos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'liquidaciones_admin' %}active{% endif %}" href="{% url 'liquidaciones_admin' %}">
+                  <i class="bi bi-cash-coin me-2"></i>Liquidaciones
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'horarios_admin' %}active{% endif %}" href="{% url 'horarios_admin' %}">
+                  <i class="bi bi-clock me-2"></i>Horarios
+                </a>
+              </li>
+              {% endwith %}
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle" id="tablaLiquidaciones">
-              <thead class="table-light">
-                <tr>
-                  <th>#</th>
-                  <th>Mes</th>
-                  <th>Año</th>
-                  <th>Monto líquido</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody><!-- filas dinámicas --></tbody>
-            </table>
+      <!-- Contenido principal -->
+      <div class="col-lg-10 col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="m-0">Mis liquidaciones</h4>
+          <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'dash_admin' %}">Volver al dashboard</a>
+            <button class="btn btn-outline-primary btn-sm" id="btnDescargarTodo">Descargar todo</button>
           </div>
+        </div>
 
-          <!-- Paginación -->
-          <nav aria-label="Paginación de liquidaciones">
-            <ul class="pagination justify-content-center" id="paginador"><!-- items dinámicos --></ul>
-          </nav>
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="tablaLiquidaciones">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Mes</th>
+                    <th>Año</th>
+                    <th>Monto líquido</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody><!-- filas dinámicas --></tbody>
+              </table>
+            </div>
+
+            <!-- Paginación -->
+            <nav aria-label="Paginación de liquidaciones">
+              <ul class="pagination justify-content-center" id="paginador"><!-- items dinámicos --></ul>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
