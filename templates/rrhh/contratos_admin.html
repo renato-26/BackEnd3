@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contratos — Admin Fornería</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <style>
     .brand{color:#dc3545;font-weight:700}
     .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover}
@@ -24,44 +25,85 @@
     </div>
   </nav>
 
-  <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="m-0">Contratos de empleados</h4>
-      <a class="btn btn-outline-secondary btn-sm" href="admin_dashboard.html">Volver al panel</a>
-    </div>
-
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-          <div class="d-flex gap-2">
-            <input id="q" class="form-control form-control-sm" placeholder="Buscar por nombre, cargo o estado">
-            <button id="btnLimpiar" class="btn btn-outline-secondary btn-sm">Limpiar</button>
-          </div>
-          <div class="d-flex gap-2">
-            <select id="fEstado" class="form-select form-select-sm">
-              <option value="">Estado: todos</option>
-              <option value="Vigente">Vigente</option>
-              <option value="Finalizado">Finalizado</option>
-              <option value="En firma">En firma</option>
-            </select>
+  <div class="container-fluid py-4">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-2 col-md-3 d-none d-md-block">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title text-muted mb-3">NAVEGACIÓN</h6>
+            <ul class="nav nav-pills flex-column gap-2">
+              <li class="nav-item">
+                <a class="nav-link" href="dashboard_admin.html">
+                  <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="crud_cargo.html">
+                  <i class="bi bi-briefcase me-2"></i>Gestión de Cargos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="contratos_admin.html">
+                  <i class="bi bi-file-earmark-text me-2"></i>Contratos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="liquidacion.html">
+                  <i class="bi bi-cash-coin me-2"></i>Liquidaciones
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="horario_jornada.html">
+                  <i class="bi bi-clock me-2"></i>Horarios
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div class="table-responsive">
-          <table class="table table-hover align-middle" id="tablaContratos">
-            <thead class="table-light">
-              <tr>
-                <th>#</th>
-                <th>Empleado</th>
-                <th>Cargo</th>
-                <th>Tipo</th>
-                <th>Inicio</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody><!-- filas dinámicas --></tbody>
-          </table>
+      <!-- Contenido principal -->
+      <div class="col-lg-10 col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="m-0">Contratos de empleados</h4>
+          <a class="btn btn-outline-secondary btn-sm" href="dashboard_admin.html">Volver al panel</a>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div class="d-flex gap-2">
+                <input id="q" class="form-control form-control-sm" placeholder="Buscar por nombre, cargo o estado">
+                <button id="btnLimpiar" class="btn btn-outline-secondary btn-sm">Limpiar</button>
+              </div>
+              <div class="d-flex gap-2">
+                <select id="fEstado" class="form-select form-select-sm">
+                  <option value="">Estado: todos</option>
+                  <option value="Vigente">Vigente</option>
+                  <option value="Finalizado">Finalizado</option>
+                  <option value="En firma">En firma</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="tablaContratos">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Empleado</th>
+                    <th>Cargo</th>
+                    <th>Tipo</th>
+                    <th>Inicio</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody><!-- filas dinámicas --></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -94,4 +136,103 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <scr
+  <script>
+    // Datos de ejemplo para contratos
+    const contratos = [
+      { id: 1, nombre: "María González", cargo: "Supervisora", tipo: "Indefinido", inicio: "2023-01-15", estado: "Vigente" },
+      { id: 2, nombre: "Juan Pérez", cargo: "Operario", tipo: "Plazo fijo", inicio: "2024-03-01", estado: "Vigente" },
+      { id: 3, nombre: "Ana López", cargo: "Control Calidad", tipo: "Indefinido", inicio: "2022-11-20", estado: "Vigente" },
+      { id: 4, nombre: "Carlos Díaz", cargo: "Operario", tipo: "Plazo fijo", inicio: "2024-06-10", estado: "En firma" },
+      { id: 5, nombre: "Sofía Rivas", cargo: "Atención Tienda", tipo: "Part-time", inicio: "2023-08-05", estado: "Vigente" },
+      { id: 6, nombre: "Pedro Castro", cargo: "Operario", tipo: "Indefinido", inicio: "2021-05-12", estado: "Finalizado" }
+    ];
+
+    // Renderizar tabla de contratos
+    function renderTablaContratos(lista = contratos) {
+      const tbody = document.querySelector("#tablaContratos tbody");
+      tbody.innerHTML = "";
+      
+      lista.forEach((contrato, index) => {
+        const tr = document.createElement("tr");
+        
+        // Determinar color del badge según estado
+        let badgeClass = "bg-secondary";
+        if (contrato.estado === "Vigente") badgeClass = "bg-success";
+        if (contrato.estado === "En firma") badgeClass = "bg-warning";
+        if (contrato.estado === "Finalizado") badgeClass = "bg-danger";
+        
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${contrato.nombre}</td>
+          <td>${contrato.cargo}</td>
+          <td>${contrato.tipo}</td>
+          <td>${new Date(contrato.inicio).toLocaleDateString()}</td>
+          <td><span class="badge ${badgeClass}">${contrato.estado}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary btn-ver" data-id="${contrato.id}">Ver</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Agregar eventos a los botones "Ver"
+      document.querySelectorAll(".btn-ver").forEach(btn => {
+        btn.addEventListener("click", () => abrirContrato(parseInt(btn.dataset.id)));
+      });
+    }
+
+    // Función para abrir el offcanvas del contrato
+    function abrirContrato(id) {
+      const contrato = contratos.find(c => c.id === id);
+      if (!contrato) return;
+
+      document.getElementById("cNombre").textContent = contrato.nombre;
+      document.getElementById("cCargo").textContent = contrato.cargo;
+      document.getElementById("cTipo").textContent = contrato.tipo;
+      document.getElementById("cEstado").textContent = contrato.estado;
+      document.getElementById("cFechas").textContent = `Inicio: ${new Date(contrato.inicio).toLocaleDateString()}`;
+
+      // Aquí iría la URL real del PDF
+      document.getElementById("cPdf").src = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+      document.getElementById("btnDescargar").href = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+
+      const offcanvas = new bootstrap.Offcanvas(document.getElementById('offContrato'));
+      offcanvas.show();
+    }
+
+    // Función para filtrar contratos
+    function filtrarContratos() {
+      const texto = document.getElementById("q").value.toLowerCase();
+      const estado = document.getElementById("fEstado").value;
+      
+      const filtrados = contratos.filter(contrato => {
+        const coincideTexto = contrato.nombre.toLowerCase().includes(texto) || 
+                             contrato.cargo.toLowerCase().includes(texto) ||
+                             contrato.estado.toLowerCase().includes(texto);
+        const coincideEstado = !estado || contrato.estado === estado;
+        
+        return coincideTexto && coincideEstado;
+      });
+      
+      renderTablaContratos(filtrados);
+    }
+
+    // Event listeners
+    document.getElementById("q").addEventListener("input", filtrarContratos);
+    document.getElementById("fEstado").addEventListener("change", filtrarContratos);
+    document.getElementById("btnLimpiar").addEventListener("click", () => {
+      document.getElementById("q").value = "";
+      document.getElementById("fEstado").value = "";
+      renderTablaContratos(contratos);
+    });
+
+    // Botón imprimir
+    document.getElementById("btnImprimir").addEventListener("click", () => {
+      window.print();
+    });
+
+    // Inicializar tabla
+    renderTablaContratos();
+  </script>
+</body>
+</html>
