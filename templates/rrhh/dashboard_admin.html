@@ -388,5 +388,23 @@
       cancelarGrupo(grpHorario);
     });
   </script>
+  <script>
+    // Al abrir el offcanvas, ajustamos el href de "Gestionar Cargo" con el id del empleado seleccionado
+    document.addEventListener("DOMContentLoaded", function () {
+      const off = document.getElementById("offEmpleado");
+      const btnCargo = document.getElementById("btnEditCargo");
+
+      // URL base resuelta por Django con pk=0; luego reemplazamos ese 0 por el id real
+      const baseCargo = "{% url 'empleado_cargo_edit' pk=0 %}";  // /dashboard-admin/empleados/cargo/0/
+
+      off.addEventListener("show.bs.offcanvas", function (ev) {
+        const opener = ev.relatedTarget;                 // el botón .btn-ver que abrió el offcanvas
+        const id = opener?.getAttribute("data-id");      // viene de data-id="{{ e.id }}"
+        if (!id) return;
+        btnCargo.href = baseCargo.replace("/0/", `/${id}/`);
+      });
+    });
+  </script>
+
 </body>
 </html>

@@ -629,14 +629,37 @@ def cargo_delete(request, pk):
 @login_required
 def empleado_cargo_edit(request, pk):
     emp = get_object_or_404(empleado, pk=pk)
-    cargos = cargo.objects.order_by("nombre")
 
     if request.method == "POST":
-        cargo_id = request.POST.get("cargo_id", "").strip()
-        emp.cargo = cargo.objects.get(pk=cargo_id) if cargo_id else None
-        emp.save(update_fields=["cargo"])
-        messages.success(request, "Cargo actualizado correctamente.")
-        return redirect("empleado_cargo_edit", pk=emp.id)
+        id_cargo = request.POST.get("cargo")  # o el nombre del campo del formulario
+        if id_cargo:
+            emp.cargo_id = id_cargo
+            emp.save()
 
-    ctx = {"emp": emp, "cargos": cargos}
-    return render(request, "rrhh/empleado_cargo_edit.html", ctx)
+        # ✅ redirige de vuelta al dashboard una vez guardado
+        return redirect('dash_admin')
+
+    # GET → mostrar el formulario
+    cargos = cargo.objects.all()
+    return render(request, "rrhh/empleado_cargo_edit.html", {"emp": emp, "cargos": cargos})
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import PerfilForm
+
+@login_required
+def perfil_view(request):
+    return render(request, "usuarios/perfil.html")
+
+@login_required
+def perfil_edit(request):
+    if request.method == "POST":
+        form = PerfilForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("perfil")
+    else:
+        form = PerfilForm(instance=request.user)
+    return render(request, "usuarios/perfil_edit.html", {"form": form})
