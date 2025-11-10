@@ -27,7 +27,7 @@ urlpatterns = [
     path('dashboard-admin/crud-cargo/', v.crud_cargo_page, name='crud_cargo'),
     
 
-    # ✅ NUEVAS RUTAS CRUD HORARIO
+    # NUEVAS RUTAS CRUD HORARIO
     path('dashboard-admin/horarios/jornadas/', v.horario_jornada_list, name='horario_jornada'),
     path('dashboard-admin/horarios/jornadas/crear/', v.horario_jornada_create, name='horario_create'),
     path('dashboard-admin/horarios/jornadas/<int:pk>/editar/', v.horario_jornada_update, name='horario_update'),

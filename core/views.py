@@ -241,6 +241,7 @@ def contrato_delete(request, pk):
 @user_passes_test(is_admin, login_url='/')
 def zonas_list(request):
     q = request.GET.get("q", "").strip()
+
     zonas = ZonaTrabajo.objects.all().order_by("nombre")
     if q:
         zonas = zonas.filter(
@@ -249,7 +250,15 @@ def zonas_list(request):
             Q(ubicacion__icontains=q) |
             Q(supervisor__icontains=q)
         )
-    return render(request, "rrhh/zonas_list.html", {"zonas": zonas, "q": q})
+
+    paginator = Paginator(zonas, 5)               # ← 5 por página
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)    # ← objeto de página
+
+    return render(request, "rrhh/zonas_list.html", {
+        "q": q,
+        "page_obj": page_obj,                     # ← pásalo al template
+    })
 
 @login_required
 @user_passes_test(is_admin, login_url='/')
