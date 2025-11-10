@@ -1,0 +1,26 @@
+{% extends "rrhh/base.html" %}
+{% block content %}
+<div class="container py-4" style="max-width: 760px;">
+  <h4 class="mb-3">{{ titulo }}</h4>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-body">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="card-footer d-flex gap-2">
+        <a href="{% url 'zonas_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+        <button class="btn btn-primary" type="submit">Guardar</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

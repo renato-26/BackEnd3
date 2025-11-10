@@ -1,0 +1,21 @@
+{% extends "rrhh/base.html" %}
+{% block content %}
+<div class="container py-4" style="max-width: 640px;">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="mb-3">Eliminar zona</h4>
+      <p>¿Seguro que quieres eliminar la zona <strong>{{ obj.nombre }}</strong>?</p>
+      <div class="alert alert-warning">
+        Si hay empleados con esta zona, su relación quedará a <em>NULL</em>.
+      </div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+      <a href="{% url 'zonas_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+      <form method="post" class="ms-auto">
+        {% csrf_token %}
+        <button class="btn btn-danger">Eliminar definitivamente</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 # core/forms.py
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import pago, contrato
+from .models import pago, contrato, ZonaTrabajo, empleado
 
 class PagoForm(forms.ModelForm):
     class Meta:
@@ -56,3 +56,25 @@ class ContratoForm(forms.ModelForm):
             self.fields['departamento'].label_from_instance = lambda obj: obj.nombre
         if 'turno_has_jornada' in self.fields:
             self.fields['turno_has_jornada'].label = "Turno / Jornada"
+
+
+class ZonaTrabajoForm(forms.ModelForm):
+    class Meta:
+        model = ZonaTrabajo
+        fields = ["nombre", "area", "ubicacion", "supervisor", "notas", "status"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "area": forms.TextInput(attrs={"class": "form-control"}),
+            "ubicacion": forms.TextInput(attrs={"class": "form-control"}),
+            "supervisor": forms.TextInput(attrs={"class": "form-control"}),
+            "notas": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "status": forms.Select(attrs={"class": "form-select"}),
+        }
+
+class EmpleadoZonaForm(forms.ModelForm):
+    class Meta:
+        model = empleado
+        fields = ["zona_trabajo"]
+        widgets = {
+            "zona_trabajo": forms.Select(attrs={"class": "form-select"})
+        }

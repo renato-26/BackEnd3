@@ -26,9 +26,20 @@ urlpatterns = [
     path('dashboard-admin/contratos/<int:pk>/editar/', v.contrato_edit, name='contrato_edit'),
     path('dashboard-admin/contratos/<int:pk>/eliminar/', v.contrato_delete, name='contrato_delete'),
     path('dashboard-admin/crud-cargo/', v.crud_cargo_page, name='crud_cargo'),
+    
 
     # API
     path('api/login/', v.login_json, name='login_json'),
     path('api/logout/', v.logout_view, name='logout'),
     path('api/me/', v.me, name='me'),
+   
+     # Zonas de trabajo (CRUD)
+    path('dashboard-admin/zonas/', v.zonas_list, name='zonas_list'),
+    path('dashboard-admin/zonas/nueva/', v.zona_create, name='zona_create'),
+    path('dashboard-admin/zonas/<int:pk>/editar/', v.zona_edit, name='zona_edit'),
+    path('dashboard-admin/zonas/<int:pk>/eliminar/', v.zona_delete, name='zona_delete'),
+
+    # Asignación de zona a empleados
+    path('dashboard-admin/empleados/zonas/', v.empleado_zonas_list, name='empleado_zonas_list'),
+    path('dashboard-admin/empleados/<int:pk>/zona/', v.empleado_zona_edit, name='empleado_zona_edit'),
 ] + (static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) if settings.DEBUG else [])

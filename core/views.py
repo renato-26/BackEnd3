@@ -11,7 +11,8 @@ from .forms import ContratoForm
 from .models import contrato
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import empleado, liquidacion, jornada, turno_has_jornada
+from .models import empleado, liquidacion, jornada, turno_has_jornada, ZonaTrabajo
+from .forms import ZonaTrabajoForm, EmpleadoZonaForm
 
 
 User = get_user_model()
@@ -246,6 +247,96 @@ def contrato_delete(request, pk):
         return redirect('contratos_admin')
     return render(request, 'rrhh/contrato_confirm_delete.html', {'obj': obj})
 
+# ---------------------------
+# CRUD Zonas de Trabajo
+# ---------------------------
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def zonas_list(request):
+    q = request.GET.get("q", "").strip()
+    zonas = ZonaTrabajo.objects.all().order_by("nombre")
+    if q:
+        zonas = zonas.filter(
+            Q(nombre__icontains=q) |
+            Q(area__icontains=q) |
+            Q(ubicacion__icontains=q) |
+            Q(supervisor__icontains=q)
+        )
+    return render(request, "rrhh/zonas_list.html", {"zonas": zonas, "q": q})
+
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def zona_create(request):
+    if request.method == "POST":
+        form = ZonaTrabajoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Zona creada correctamente.")
+            return redirect("zonas_list")
+    else:
+        form = ZonaTrabajoForm()
+    return render(request, "rrhh/zona_form.html", {"form": form, "titulo": "Nueva zona"})
+
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def zona_edit(request, pk):
+    z = get_object_or_404(ZonaTrabajo, pk=pk)
+    if request.method == "POST":
+        form = ZonaTrabajoForm(request.POST, instance=z)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Zona actualizada.")
+            return redirect("zonas_list")
+    else:
+        form = ZonaTrabajoForm(instance=z)
+    return render(request, "rrhh/zona_form.html", {"form": form, "titulo": "Editar zona"})
+
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def zona_delete(request, pk):
+    z = get_object_or_404(ZonaTrabajo, pk=pk)
+    if request.method == "POST":
+        z.delete()
+        messages.success(request, "Zona eliminada.")
+        return redirect("zonas_list")
+    return render(request, "rrhh/zona_confirm_delete.html", {"obj": z})
+
+# ---------------------------
+# Asignar/Cambiar zona a Empleado
+# ---------------------------
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def empleado_zonas_list(request):
+    q = request.GET.get("q", "").strip()
+    emps = empleado.objects.select_related("user", "zona_trabajo").order_by("id")
+    if q:
+        emps = emps.filter(
+            Q(user__first_name__icontains=q) |
+            Q(user__last_name__icontains=q) |
+            Q(run__icontains=q) |
+            Q(zona_trabajo__nombre__icontains=q)
+        )
+    return render(request, "rrhh/empleado_zonas_list.html", {"empleados": emps, "q": q})
+
+@login_required
+@user_passes_test(is_admin, login_url='/')
+def empleado_zona_edit(request, pk):
+    emp = get_object_or_404(empleado.objects.select_related("user", "zona_trabajo"), pk=pk)
+    if request.method == "POST":
+        form = EmpleadoZonaForm(request.POST, instance=emp)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Zona asignada/actualizada para el empleado.")
+            return redirect("empleado_zonas_list")
+    else:
+        form = EmpleadoZonaForm(instance=emp)
+
+    return render(
+        request,
+        "rrhh/empleado_zona_form.html",
+        {"form": form, "empleado": emp, "titulo": f"Zona de {emp.user.get_full_name() or emp.user.username}"}
+    )
+
 
 # ---------- API ----------
 @csrf_exempt
@@ -313,3 +404,6 @@ def is_admin(u):  # solo staff entra al CRUD
 @user_passes_test(is_admin)
 def crud_cargo_page(request):
     return render(request, 'rrhh/crud_cargo.html')
+
+
+
