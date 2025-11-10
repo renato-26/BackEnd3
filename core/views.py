@@ -405,5 +405,38 @@ def is_admin(u):  # solo staff entra al CRUD
 def crud_cargo_page(request):
     return render(request, 'rrhh/crud_cargo.html')
 
+@login_required
+def liquidaciones_list(request):
+    """
+    Lista las liquidaciones del empleado asociado al usuario logueado.
+    Sirve para /dashboard/liquidaciones/ y /dashboard-admin/liquidaciones/
+    """
+    # localizar empleado del usuario
+    emp = None
+    try:
+        emp = empleado.objects.get(user=request.user)
+    except empleado.DoesNotExist:
+        emp = None
 
+    qs = liquidacion.objects.none()
+    if emp:
+        qs = (liquidacion.objects
+              .filter(contrato__empleado=emp)
+              .select_related('contrato')
+              .order_by('-periodo'))
+
+    # paginación
+    paginator = Paginator(qs, 10)  # 10 filas por página (ajusta si quieres)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # para el botón "Volver al dashboard"
+    back_name = 'dash_admin' if _rol_de(request.user) == 'admin' else 'dash_empleado'
+
+    context = {
+        'page_obj': page_obj,
+        'liqs': page_obj.object_list,    # comodidad en el template
+        'back_name': back_name,
+    }
+    return render(request, 'rrhh/liquidaciones_list.html', context)
 

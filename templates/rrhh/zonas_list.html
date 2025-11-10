@@ -1,57 +1,113 @@
-{% extends "rrhh/base.html" %}{% load static %}
+{% extends "rrhh/base.html" %}
+{% load static %}
+
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="m-0">Zonas de trabajo</h4>
-    <a href="{% url 'zona_create' %}" class="btn btn-primary">Nueva zona</a>
-  </div>
-
-  <form class="row g-2 mb-3">
-    <div class="col-auto">
-      <input name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre, área, ubicación...">
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- SIDEBAR -->
+    <div class="col-lg-2 col-md-3 d-none d-md-block">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title text-muted mb-3">NAVEGACIÓN</h6>
+          <ul class="nav nav-pills flex-column gap-2">
+            {% with n=request.resolver_match.url_name %}
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'dash_admin' %}active{% endif %}" href="{% url 'dash_admin' %}">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'crud_cargo' %}active{% endif %}" href="{% url 'crud_cargo' %}">
+                <i class="bi bi-briefcase me-2"></i>Gestión de Cargos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'contratos_admin' %}active{% endif %}" href="{% url 'contratos_admin' %}">
+                <i class="bi bi-file-earmark-text me-2"></i>Contratos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'liquidaciones_admin' %}active{% endif %}" href="{% url 'liquidaciones_admin' %}">
+                <i class="bi bi-cash-coin me-2"></i>Liquidaciones
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'horarios_admin' %}active{% endif %}" href="{% url 'horarios_admin' %}">
+                <i class="bi bi-clock me-2"></i>Horarios
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'zonas_list' %}active{% endif %}" href="{% url 'zonas_list' %}">
+                <i class="bi bi-geo-alt me-2"></i>Zonas de trabajo
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if n == 'empleado_zonas_list' %}active{% endif %}" href="{% url 'empleado_zonas_list' %}">
+                <i class="bi bi-people me-2"></i>Asignar zonas
+              </a>
+            </li>
+            {% endwith %}
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="col-auto">
-      <button class="btn btn-outline-secondary">Buscar</button>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="col-lg-10 col-md-9">
+      <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="m-0">Zonas de trabajo</h4>
+          <a href="{% url 'zona_create' %}" class="btn btn-primary">Nueva zona</a>
+        </div>
+
+        <form class="row g-2 mb-3">
+          <div class="col-auto">
+            <input name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre, área, ubicación...">
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-outline-secondary">Buscar</button>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Área</th>
+                <th>Ubicación</th>
+                <th>Supervisor</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for z in zonas %}
+                <tr>
+                  <td>{{ z.nombre }}</td>
+                  <td>{{ z.area }}</td>
+                  <td>{{ z.ubicacion }}</td>
+                  <td>{{ z.supervisor }}</td>
+                  <td>
+                    <span class="badge {% if z.status == 'ACTIVE' %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+                      {{ z.status }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'zona_edit' z.id %}">Editar</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'zona_delete' z.id %}">Eliminar</a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="6" class="text-center text-muted">Sin zonas.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        </div>
+      </div>
     </div>
-  </form>
-
-  <div class="table-responsive">
-    <table class="table table-hover align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>Nombre</th>
-          <th>Área</th>
-          <th>Ubicación</th>
-          <th>Supervisor</th>
-          <th>Estado</th>
-          <th class="text-end">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for z in zonas %}
-          <tr>
-            <td>{{ z.nombre }}</td>
-            <td>{{ z.area }}</td>
-            <td>{{ z.ubicacion }}</td>
-            <td>{{ z.supervisor }}</td>
-            <td><span class="badge {% if z.status == 'ACTIVE' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ z.status }}</span></td>
-            <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'zona_edit' z.id %}">Editar</a>
-              <a class="btn btn-sm btn-outline-danger" href="{% url 'zona_delete' z.id %}">Eliminar</a>
-            </td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="6" class="text-center text-muted">Sin zonas.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <hr class="my-4">
-
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="m-0">Asignación de zonas a empleados</h5>
-    <a class="btn btn-outline-dark" href="{% url 'empleado_zonas_list' %}">Ir a asignaciones</a>
   </div>
 </div>
 {% endblock %}

@@ -15,12 +15,12 @@ urlpatterns = [
 
     # Empleado
     path('dashboard/horarios/', v.horario_page, name='horarios'),
-    path('dashboard/liquidaciones/', v.liquidacion_page, name='liquidaciones'),
+    path('dashboard/liquidaciones/', v.liquidaciones_list, name='liquidaciones'),
     path('dashboard/contrato/', v.contrato_empleado_page, name='contrato_empleado'),
 
     # Admin
     path('dashboard-admin/horarios/', v.horario_admin_page, name='horarios_admin'),
-    path('dashboard-admin/liquidaciones/', v.liquidaciones_admin_page, name='liquidaciones_admin'),
+    path('dashboard-admin/liquidaciones/', v.liquidaciones_list, name='liquidaciones_admin'),
     path('dashboard-admin/contratos/', v.contratos_admin_page, name='contratos_admin'),
     path('dashboard-admin/contratos/nuevo/', v.contrato_create, name='contrato_create'),
     path('dashboard-admin/contratos/<int:pk>/editar/', v.contrato_edit, name='contrato_edit'),

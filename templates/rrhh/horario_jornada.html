@@ -40,7 +40,7 @@
   <!-- Contenido -->
   <div class="container-fluid py-4">
     <div class="row">
-      <!-- Sidebar -->
+            <!-- SIDEBAR -->
       <div class="col-lg-2 col-md-3 d-none d-md-block">
         <div class="card shadow-sm">
           <div class="card-body">
@@ -72,6 +72,17 @@
                   <i class="bi bi-clock me-2"></i>Horarios
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'zonas_list' %}active{% endif %}" href="{% url 'zonas_list' %}">
+                  <i class="bi bi-geo-alt me-2"></i>Zonas de trabajo
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'empleado_zonas_list' %}active{% endif %}" href="{% url 'empleado_zonas_list' %}">
+                  <i class="bi bi-people me-2"></i>Asignar zonas
+                </a>
+              </li>
+
               {% endwith %}
             </ul>
           </div>

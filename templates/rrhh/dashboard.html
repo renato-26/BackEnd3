@@ -135,37 +135,35 @@
       </div>
 
       <div class="col-12 col-lg-4">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <div class="d-flex align-items-center gap-3 mb-3">
-              <img src="https://via.placeholder.com/160" alt="mifoto" class="avatar-lg" id="profileAvatar">
-              <div>
-                <h5 class="mb-1" id="profileName">Renato Muñoz</h5>
-                <span class="badge text-bg-primary">Empleado</span>
-              </div>
-            </div>
-            <div class="mb-2">
-              <small class="text-muted d-block">Nacionalidad</small>
-              <span id="profileNationality">Chilena</span>
-            </div>
-            <div class="mb-2">
-              <small class="text-muted d-block">Dirección</small>
-              <span id="profileAddress">Av. Siempre Viva 742, Santiago</span>
-            </div>
-            <div class="mb-2">
-              <small class="text-muted d-block">Teléfono</small>
-              <span id="profilePhone">+56 9 1234 5678</span>
-            </div>
-            <div class="mb-3">
-              <small class="text-muted d-block">Correo</small>
-              <span id="profileEmail">renato.munoz@forneria.cl</span>
-            </div>
+        {% load static %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <img src="{% static 'img/avatar-default.png' %}" alt="mifoto" class="avatar-lg">
+      <div>
+        <h5 class="mb-1">
+          {{ emp.user.get_full_name|default:emp.user.username }}
+        </h5>
+        <span class="badge text-bg-primary">Empleado</span>
+      </div>
+    </div>
 
-            <div class="d-grid">
-              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editModal">Editar información personal</button>
-            </div>
-          </div>
-        </div>
+    <div class="mb-2">
+      <small class="text-muted d-block">Nacionalidad</small>
+      <span>{{ emp.nacionalidad|default:"—" }}</span>
+    </div>
+    <div class="mb-2">
+      <small class="text-muted d-block">Teléfono</small>
+      <span>
+        {% if emp.fono %}+56 {{ emp.fono }}{% else %}—{% endif %}
+      </span>
+    </div>
+    <div class="mb-0">
+      <small class="text-muted d-block">Correo</small>
+      <span>{{ emp.user.email|default:"—" }}</span>
+    </div>
+  </div>
+</div>
 
         <div class="card shadow-sm mt-4">
           <div class="card-body">
