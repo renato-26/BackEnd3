@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import empleado, liquidacion, jornada, turno_has_jornada
+from .models import empleado, liquidacion, jornada, turno_has_jornada,ZonaTrabajo
+from .forms import EmpleadoZonaForm, ZonaTrabajoForm
 
 
 from .forms import ContratoForm
