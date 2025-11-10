@@ -18,12 +18,83 @@
 </head>
 <body class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <span class="h4 m-0 brand">Fornería</span>
-    </a>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <span class="h4 m-0 brand">Fornería</span>
+      </a>
+
+      <div class="ms-auto d-flex align-items-center gap-2">
+        {% if admin_emp and admin_emp.user.first_name %}
+          <img src="https://ui-avatars.com/api/?name={{ admin_emp.user.first_name }}+{{ admin_emp.user.last_name }}&background=dc3545&color=fff&bold=true"
+               alt="foto perfil" class="avatar" id="navAvatar">
+        {% else %}
+          <img src="https://via.placeholder.com/90" alt="avatar" class="avatar" id="navAvatar">
+        {% endif %}
+
+        <span class="fw-semibold" id="navUserName">
+          {{ request.user.get_full_name|default:request.user.username }} (Admin)
+        </span>
+
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm px-3">Cerrar sesión</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Contenido -->
+  <div class="container-fluid py-4">
+    <div class="row">
+            <!-- SIDEBAR -->
+      <div class="col-lg-2 col-md-3 d-none d-md-block">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title text-muted mb-3">NAVEGACIÓN</h6>
+            <ul class="nav nav-pills flex-column gap-2">
+              {% with n=request.resolver_match.url_name %}
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'dash_admin' %}active{% endif %}" href="{% url 'dash_admin' %}">
+                  <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'crud_cargo' %}active{% endif %}" href="{% url 'crud_cargo' %}">
+                  <i class="bi bi-briefcase me-2"></i>Gestión de Cargos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'contratos_admin' %}active{% endif %}" href="{% url 'contratos_admin' %}">
+                  <i class="bi bi-file-earmark-text me-2"></i>Contratos
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'liquidaciones_admin' %}active{% endif %}" href="{% url 'liquidaciones_admin' %}">
+                  <i class="bi bi-cash-coin me-2"></i>Liquidaciones
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'horarios_admin' %}active{% endif %}" href="{% url 'horarios_admin' %}">
+                  <i class="bi bi-clock me-2"></i>Horarios
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'zonas_list' %}active{% endif %}" href="{% url 'zonas_list' %}">
+                  <i class="bi bi-geo-alt me-2"></i>Zonas de trabajo
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'empleado_zonas_list' %}active{% endif %}" href="{% url 'empleado_zonas_list' %}">
+                  <i class="bi bi-people me-2"></i>Asignar zonas
+                </a>
+              </li>
+
+              {% endwith %}
+            </ul>
+          </div>
+        </div>
+      </div>
+>>>>>>> f9bc10a952ccc4222693a2b30674f35f9f1219fb
 
     <div class="ms-auto d-flex align-items-center gap-2">
       <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}+{{ request.user.last_name }}&background=dc3545&color=fff&bold=true"

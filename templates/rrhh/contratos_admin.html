@@ -15,19 +15,32 @@
 </head>
 <body class="bg-light">
   <!-- Navbar -->
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><span class="h4 m-0 brand">Fornería</span></a>
+      <a class="navbar-brand" href="#">
+        <span class="h4 m-0 brand">Fornería</span>
+      </a>
+
       <div class="ms-auto d-flex align-items-center gap-2">
-        <img src="https://via.placeholder.com/90" alt="mifoto" class="avatar">
-        <span class="fw-semibold">Renato Muñoz (Admin)</span>
+        {% if admin_emp and admin_emp.user.first_name %}
+          <img src="https://ui-avatars.com/api/?name={{ admin_emp.user.first_name }}+{{ admin_emp.user.last_name }}&background=dc3545&color=fff&bold=true"
+               alt="foto perfil" class="avatar" id="navAvatar">
+        {% else %}
+          <img src="https://via.placeholder.com/90" alt="avatar" class="avatar" id="navAvatar">
+        {% endif %}
+
+        <span class="fw-semibold" id="navUserName">
+          {{ request.user.get_full_name|default:request.user.username }} (Admin)
+        </span>
+
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm px-3">Cerrar sesión</a>
       </div>
     </div>
   </nav>
 
   <div class="container-fluid py-4">
     <div class="row">
-      <!-- Sidebar -->
       <div class="col-lg-2 col-md-3 d-none d-md-block">
         <div class="card shadow-sm">
           <div class="card-body">
@@ -59,6 +72,17 @@
                   <i class="bi bi-clock me-2"></i>Horarios
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'zonas_list' %}active{% endif %}" href="{% url 'zonas_list' %}">
+                  <i class="bi bi-geo-alt me-2"></i>Zonas de trabajo
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'empleado_zonas_list' %}active{% endif %}" href="{% url 'empleado_zonas_list' %}">
+                  <i class="bi bi-people me-2"></i>Asignar zonas
+                </a>
+              </li>
+
               {% endwith %}
             </ul>
           </div>

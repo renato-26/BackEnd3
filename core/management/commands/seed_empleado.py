@@ -3,7 +3,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from core.models import empleado
+from core.models import empleado, ZonaTrabajo
+
 
 User = get_user_model()
 
@@ -29,7 +30,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "12.345.678-9",
                         "fono": 912345678,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Oficina Central - Piso 2"  # <--- nombre exacto
                     }
                 },
                 {
@@ -41,7 +43,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "13.456.789-0",
                         "fono": 922334455,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Sala de Reuniones - Piso 1"
                     }
                 },
                 {
@@ -53,7 +56,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "14.567.890-1",
                         "fono": 933445566,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Área de Capacitación"
                     }
                 },
                 {
@@ -65,7 +69,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "15.678.901-2",
                         "fono": 944556677,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Oficina Contabilidad"
                     }
                 },
                 {
@@ -77,7 +82,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "16.789.012-3",
                         "fono": 955667788,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Sala de Descanso"
                     }
                 },
                 {
@@ -89,7 +95,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "17.890.123-4",
                         "fono": 966778899,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Centro de Operaciones TI"
                     }
                 },
                 {
@@ -101,7 +108,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "18.901.234-5",
                         "fono": 977889900,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Oficina Ventas"
                     }
                 },
                 {
@@ -113,7 +121,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "19.012.345-6",
                         "fono": 988990011,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Laboratorio Desarrollo"
                     }
                 },
                 {
@@ -125,7 +134,8 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "20.123.456-7",
                         "fono": 999001122,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Laboratorio Desarrollo"
                     }
                 },
                 {
@@ -137,7 +147,9 @@ class Command(BaseCommand):
                     "empleado_data": {
                         "run": "21.234.567-8",
                         "fono": 911223344,
-                        "nacionalidad": "Chilena"
+                        "nacionalidad": "Chilena",
+                        "zona": "Oficina Ventas"
+
                     }
                 }
             ]
@@ -209,6 +221,19 @@ class Command(BaseCommand):
                     else:
                         empleados_creados += 1
                         self.stdout.write(f"Empleado creado: {emp_data['first_name']} {emp_data['last_name']} (RUN: {emp_data['empleado_data']['run']})")
+                    # --- ASIGNAR ZONA DE TRABAJO (si viene en la seed) ---
+                    zona_nombre = emp_data["empleado_data"].get("zona")
+                    if zona_nombre:
+                        try:
+                            z = ZonaTrabajo.objects.get(nombre__iexact=zona_nombre)
+                            if emp_obj.zona_trabajo_id != z.id:
+                                emp_obj.zona_trabajo = z
+                                emp_obj.save(update_fields=["zona_trabajo"])
+                                self.stdout.write(f"Zona asignada a {emp_obj.run}: {z.nombre}")
+                        except ZonaTrabajo.DoesNotExist:
+                            self.stdout.write(self.style.WARNING(
+                                f"Zona '{zona_nombre}' no existe. {emp_obj.run} queda sin zona."
+                            ))
 
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f"Error creando empleado {emp_data['username']}: {e}"))

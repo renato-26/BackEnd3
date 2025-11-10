@@ -77,6 +77,17 @@
                   <i class="bi bi-clock me-2"></i>Horarios
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'zonas_list' %}active{% endif %}" href="{% url 'zonas_list' %}">
+                  <i class="bi bi-geo-alt me-2"></i>Zonas de trabajo
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if n == 'empleado_zonas_list' %}active{% endif %}" href="{% url 'empleado_zonas_list' %}">
+                  <i class="bi bi-people me-2"></i>Asignar zonas
+                </a>
+              </li>
+
               {% endwith %}
             </ul>
           </div>
@@ -264,14 +275,23 @@
             <div class="label-muted">Zona de trabajo</div>
             <div id="vZona" class="fw-semibold">—</div>
           </div>
-          <button class="btn btn-sm btn-outline-primary" id="btnEditZona">Editar</button>
-        </div>
-        <div class="mt-2 d-none" id="grpZona">
-          <div class="input-group">
-            <input class="form-control" id="inZona" placeholder="Ej: Hornos, Producción, Tienda">
-            <button class="btn btn-primary" id="btnSaveZona">Guardar</button>
-            <button class="btn btn-outline-secondary" id="btnCancelZona">Cancelar</button>
-          </div>
+          <a class="btn btn-sm btn-outline-primary" id="btnEditZona" href="#">Gestionar Zona</a>
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const off = document.getElementById("offEmpleado"); // id de tu offcanvas
+            const btnZona = document.getElementById("btnEditZona");
+
+            // URL base generada por Django con pk=0 (luego reemplazamos el 0 por el id real)
+            const base = "{% url 'empleado_zona_edit' pk=0 %}";  // /dashboard-admin/empleados/0/zona/
+
+            off.addEventListener("show.bs.offcanvas", function (ev) {
+            const btn = ev.relatedTarget;                 // botón "Ver" que abrió el offcanvas
+            const id  = btn?.getAttribute("data-id");     // viene de data-id="{{ e.id }}"
+            if (!id) return;
+            btnZona.href = base.replace("/0/", `/${id}/`);
+              });
+          });
+          </script>
         </div>
       </div>
 
