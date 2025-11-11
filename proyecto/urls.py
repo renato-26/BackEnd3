@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path
 from core import views as v
 from django.contrib.auth import views as auth_views
+from core import views
 
 
 
@@ -19,6 +20,8 @@ urlpatterns = [
     path('dashboard/horarios/', v.horario_page, name='horarios'),
     path('dashboard/liquidaciones/', v.liquidaciones_list, name='liquidaciones'),
     path('dashboard/contrato/', v.contrato_empleado_page, name='contrato_empleado'),
+    path("dashboard/liquidaciones/<int:pk>/excel/", views.liq_excel, name="liq_excel"),
+    path("dashboard/liquidaciones/excel/todas/", views.liq_excel_all, name="liq_excel_all"),
 
     # Admin
     path('dashboard-admin/horarios/', v.horario_admin_page, name='horarios_admin'),

@@ -65,7 +65,7 @@
                     <td><span class="badge text-bg-success">Disponible</span></td>
                     <td>
                       <button class="btn btn-sm btn-primary">Ver</button>
-                      <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      <a class="btn btn-sm btn-outline-secondary" href="{% url 'liq_excel' liq.id %}">Excel</a>
                     </td>
                   </tr>
                   <tr>
@@ -75,7 +75,7 @@
                     <td><span class="badge text-bg-secondary">Archivado</span></td>
                     <td>
                       <button class="btn btn-sm btn-primary">Ver</button>
-                      <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      <a class="btn btn-sm btn-outline-secondary" href="{% url 'liq_excel' liq.id %}">Excel</a>
                     </td>
                   </tr>
                 </tbody>

@@ -10,6 +10,9 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+import io
+import openpyxl
+from openpyxl.utils import get_column_letter
 
 from .models import (
     empleado,
@@ -706,3 +709,131 @@ def perfil_edit(request):
     else:
         form = PerfilForm(instance=request.user)
     return render(request, "usuarios/perfil_edit.html", {"form": form})
+
+
+@login_required
+def liq_excel(request, pk):
+    """
+    Descarga un Excel (.xlsx) con los datos de UNA liquidación.
+    Empleado: solo sus propias liquidaciones.
+    Admin: cualquiera.
+    """
+    # Si es empleado, limitamos al empleado logueado
+    if _rol_de(request.user) == 'empleado':
+        emp = _empleado_de_usuario(request.user)
+        liq = get_object_or_404(liquidacion, pk=pk, contrato__empleado=emp)
+    else:
+        liq = get_object_or_404(liquidacion, pk=pk)
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Liquidación"
+
+    # Cabeceras
+    headers = [
+        "Periodo", "Fecha pago", "Imponible", "No imponible", "Tributable",
+        "Descuentos", "Anticipo", "Líquido", "Devengado", "Cierre", "Estado",
+        "Empleado", "RUN", "Cargo", "Departamento"
+    ]
+    ws.append(headers)
+
+    cto = liq.contrato
+    row = [
+        liq.periodo.strftime("%Y-%m-%d") if liq.periodo else "",
+        liq.fecha_pago.strftime("%Y-%m-%d") if liq.fecha_pago else "",
+        float(liq.imponible or 0),
+        float(liq.no_imponible or 0),
+        float(liq.tributable or 0),
+        float(liq.descuentos or 0),
+        float(liq.anticipo or 0),
+        float(liq.liquido or 0),
+        liq.devengado.strftime("%Y-%m-%d") if liq.devengado else "",
+        liq.cierre.strftime("%Y-%m-%d") if liq.cierre else "",
+        liq.estado or "",
+        getattr(cto.empleado.user, "get_full_name", lambda: cto.empleado.user.username)(),
+        cto.empleado.run,
+        getattr(cto.cargo, "nombre", ""),
+        getattr(cto.departamento, "nombre", ""),
+    ]
+    ws.append(row)
+
+    # Ancho de columnas un poquito más cómodo
+    for col in range(1, len(headers) + 1):
+        ws.column_dimensions[get_column_letter(col)].width = 18
+
+    # Guardar en memoria y responder
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    filename = f"liquidacion_{liq.id}.xlsx"
+    resp = HttpResponse(
+        buf.getvalue(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    resp["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return resp
+
+
+@login_required
+def liq_excel_all(request):
+    """
+    Descarga un Excel con TODAS las liquidaciones del empleado logueado.
+    Admin: si lo deseas, puedes extenderlo para filtrar por empleado via querystring.
+    """
+    if _rol_de(request.user) != 'empleado':
+        # Para admins podríamos listar todas o pedir un ?empleado_id=
+        # Por ahora, lo limitamos al comportamiento del empleado.
+        emp = None
+    else:
+        emp = _empleado_de_usuario(request.user)
+
+    qs = liquidacion.objects.all().select_related("contrato__empleado", "contrato__cargo", "contrato__departamento")
+    if emp:
+        qs = qs.filter(contrato__empleado=emp)
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Liquidaciones"
+
+    headers = [
+        "Periodo", "Fecha pago", "Imponible", "No imponible", "Tributable",
+        "Descuentos", "Anticipo", "Líquido", "Devengado", "Cierre", "Estado",
+        "Empleado", "RUN", "Cargo", "Departamento"
+    ]
+    ws.append(headers)
+
+    for liq in qs.order_by("-periodo"):
+        cto = liq.contrato
+        ws.append([
+            liq.periodo.strftime("%Y-%m-%d") if liq.periodo else "",
+            liq.fecha_pago.strftime("%Y-%m-%d") if liq.fecha_pago else "",
+            float(liq.imponible or 0),
+            float(liq.no_imponible or 0),
+            float(liq.tributable or 0),
+            float(liq.descuentos or 0),
+            float(liq.anticipo or 0),
+            float(liq.liquido or 0),
+            liq.devengado.strftime("%Y-%m-%d") if liq.devengado else "",
+            liq.cierre.strftime("%Y-%m-%d") if liq.cierre else "",
+            liq.estado or "",
+            getattr(cto.empleado.user, "get_full_name", lambda: cto.empleado.user.username)(),
+            cto.empleado.run,
+            getattr(cto.cargo, "nombre", ""),
+            getattr(cto.departamento, "nombre", ""),
+        ])
+
+    for col in range(1, len(headers) + 1):
+        ws.column_dimensions[get_column_letter(col)].width = 18
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    filename = "mis_liquidaciones.xlsx"
+    resp = HttpResponse(
+        buf.getvalue(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    resp["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return resp
