@@ -126,11 +126,12 @@ USE_TZ = True
 # Archivos estáticos y media
 # =========================
 # En producción: `python manage.py collectstatic` → a STATIC_ROOT
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static_collected"   # carpeta destino de collectstatic
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # (Opcional) Si tienes una carpeta "static" para desarrollo:
 # STATICFILES_DIRS = [BASE_DIR / "static"]
