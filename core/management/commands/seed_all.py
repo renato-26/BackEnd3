@@ -18,12 +18,12 @@ class Command(BaseCommand):
             'seed_turno_jornada',    # ← este está bien
             'seed_forma_pago',       # ← singular
             'seed_direccion',        # ← singular
+            'seed_zonas_trabajo',    # ← singular        
             'seed_empleado',         # ← singular
             'seed_cuenta_bancarias', # ← este está bien (plural correcto)
             'seed_contrato',         # ← singular
             'seed_liquidacion',      # ← singular
-            'seed_pago',              # ← singular
-            'seed_zonas_trabajo',     # ← singular
+            'seed_pago',             # ← singular
         ]
 
         for command in commands:
