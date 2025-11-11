@@ -22,18 +22,20 @@ SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # Puedes pasar ALLOWED_HOSTS por env: "ip,dominio,otro"
 _ALH = os.getenv("ALLOWED_HOSTS", "")
-ALLOWED_HOSTS =os.getenv("DJANGO_ALLOWED_HOSTS","").split(",")
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS","").split(",") if h.strip()]
 
 
 # Si expones por IP pública o dominio, completa estas envs en .env
 EC2_IP = os.getenv("EC2_PUBLIC_IP", "").strip()
-DOMAIN = os.getenv("DOMAIN", "").strip()
-
 CSRF_TRUSTED_ORIGINS = []
+
 if EC2_IP:
-    CSRF_TRUSTED_ORIGINS += [f"http://{EC2_IP}", f"https://{EC2_IP}"]
-if DOMAIN:
-    CSRF_TRUSTED_ORIGINS += [f"http://{DOMAIN}", f"https://{DOMAIN}"]
+    CSRF_TRUSTED_ORIGINS += [
+        f"http://{EC2_IP}:8080",
+        f"https://{EC2_IP}:8080",
+        f"http://{EC2_IP}",
+        f"https://{EC2_IP}",
+    ]
 
 # =========================
 # Apps
