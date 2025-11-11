@@ -17,7 +17,7 @@ load_dotenv(BASE_DIR / ".env")          # lee .env en la raíz del repo
 # =========================
 # Modo / clave / hosts
 # =========================
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
 
 # Puedes pasar ALLOWED_HOSTS por env: "ip,dominio,otro"
