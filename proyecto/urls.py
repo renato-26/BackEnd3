@@ -5,7 +5,7 @@ from django.urls import path
 from core import views as v
 from django.contrib.auth import views as auth_views
 from core import views
-from . import views
+
 
 
 
