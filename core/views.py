@@ -713,31 +713,6 @@
         return render(request, "usuarios/perfil_edit.html", {"form": form})
 
 
-    def export_liquidacion_excel(request, pk):
-        # filtra por usuario si corresponde a tu lógica
-        liq = get_object_or_404(liquidacion, pk=pk)  # , usuario=request.user)
-
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "Liquidación"
-
-        headers = ["Mes", "Año", "Monto líquido", "Estado"]
-        estado = liq.get_estado_display() if hasattr(liq, "get_estado_display") else liq.estado
-        data = [liq.mes, liq.anio, liq.monto_liquido, estado]
-
-        ws.append(headers)
-        ws.append(data)
-
-        for col in range(1, ws.max_column + 1):
-            ws.column_dimensions[get_column_letter(col)].width = 20
-
-        filename = f'liquidacion_{liq.anio}_{liq.mes}.xlsx'
-        resp = HttpResponse(
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        resp["Content-Disposition"] = f'attachment; filename="{filename}"'
-        wb.save(resp)
-        return resp
 
 
     def export_liquidaciones_excel(request):

@@ -21,8 +21,6 @@ urlpatterns = [
     path('dashboard/horarios/', v.horario_page, name='horarios'),
     path('dashboard/liquidaciones/', v.liquidaciones_list, name='liquidaciones'),
     path('dashboard/contrato/', v.contrato_empleado_page, name='contrato_empleado'),
-    path("liquidaciones/<int:pk>/excel/", views.export_liquidacion_excel, name="liquidacion_excel"),
-    path("liquidaciones/excel/", views.export_liquidaciones_excel, name="liquidaciones_excel_all"),
 
     # Admin
     path('dashboard-admin/horarios/', v.horario_admin_page, name='horarios_admin'),
