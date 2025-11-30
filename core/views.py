@@ -14,6 +14,7 @@ import io
 import openpyxl
 from openpyxl.utils import get_column_letter
 from .models import liquidacion
+from django.views.decorators.http import require_POST
 
 
 from .models import (
@@ -764,3 +765,28 @@ def export_liquidaciones_excel(request):
     resp["Content-Disposition"] = 'attachment; filename="mis_liquidaciones.xlsx"'
     wb.save(resp)
     return resp
+
+@require_POST
+def empleado_crear(request):
+    data = json.loads(request.body)
+
+    # crear usuario
+    user = User.objects.create_user(
+        username=data["email"].split("@")[0],
+        email=data["email"],
+        password="temp123456",
+        first_name=data["first_name"],
+        last_name=data["last_name"],
+    )
+
+    # crear empleado
+    emp = empleado.objects.create(
+        user=user,
+        run=data["run"],
+        fono=data.get("fono") or None,
+        nacionalidad=data.get("nacionalidad") or "",
+        cargo_id=data.get("cargo_id") or None,
+        zona_trabajo_id=data.get("zona_id") or None,
+    )
+
+    return JsonResponse({"ok": True, "id": emp.id})

@@ -26,6 +26,7 @@ urlpatterns = [
 
     # Admin
     path('dashboard-admin/horarios/', v.horario_admin_page, name='horarios_admin'),
+    path("dashboard-admin/empleados/crear/", views.empleado_crear, name="empleado_crear"),
     path('dashboard-admin/liquidaciones/', v.liquidaciones_list, name='liquidaciones_admin'),
     path('dashboard-admin/contratos/', v.contratos_admin_page, name='contratos_admin'),
     path('dashboard-admin/contratos/nuevo/', v.contrato_create, name='contrato_create'),
@@ -39,10 +40,10 @@ urlpatterns = [
     path("dashboard-admin/crud-cargo/<int:pk>/editar/", v.cargo_edit, name="cargo_edit"),
     path("dashboard-admin/crud-cargo/<int:pk>/eliminar/", v.cargo_delete, name="cargo_delete"),
     
-    # API
-    path('api/login/', v.login_json, name='login_json'),
-    path('api/logout/', v.logout_view, name='logout'),
-    path('api/me/', v.me, name='me'),
+    # # API
+    # path('api/login/', v.login_json, name='login_json'),
+    # path('api/logout/', v.logout_view, name='logout'),
+    # path('api/me/', v.me, name='me'),
    
      # Zonas de trabajo (CRUD)
     path('dashboard-admin/zonas/', v.zonas_list, name='zonas_list'),

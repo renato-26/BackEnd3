@@ -106,6 +106,11 @@
               <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                   <h5 class="m-0">Empleados</h5>
+                <button class="btn btn-danger btn-sm"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offCrearEmpleado">
+                  <i class="bi bi-person-plus me-1"></i> Registrar empleado
+                </button>
                   <form class="d-flex gap-2" method="get">
                     <input name="q" value="{{ q }}" class="form-control form-control-sm" placeholder="Buscar por nombre, RUN o zona" />
                     <a class="btn btn-outline-secondary btn-sm" href="{% url 'dash_admin' %}">Limpiar</a>
@@ -405,6 +410,124 @@
       });
     });
   </script>
+
+  <script>
+    document.getElementById("frmNuevoEmpleado").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const btn = document.getElementById("btnSaveEmpleado");
+      const msg = document.getElementById("msgEmpleado");
+
+      btn.disabled = true;
+      btn.textContent = "Guardando...";
+      msg.textContent = "";
+
+      const payload = Object.fromEntries(new FormData(e.target));
+
+      try {
+        const res = await fetch("/dashboard-admin/empleados/crear/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.ok) {
+          msg.textContent = data.msg || "Error al crear empleado";
+          return;
+        }
+
+        location.reload(); // refrescar lista
+      } catch (err) {
+        msg.textContent = "Error de conexión";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Registrar empleado";
+      }
+    });
+  </script>
+
+
+
+<!-- OFFCANVAS CREAR EMPLEADO -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offCrearEmpleado">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Registrar nuevo empleado</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body">
+      <form id="frmNuevoEmpleado">
+
+        <h6 class="fw-bold text-danger mb-3">Datos personales</h6>
+
+        <div class="mb-3">
+          <label class="form-label">RUN</label>
+          <input type="text" class="form-control" name="run" placeholder="12.345.678-9" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Nombres</label>
+          <input type="text" class="form-control" name="first_name" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Apellidos</label>
+          <input type="text" class="form-control" name="last_name" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email institucional</label>
+          <input type="email" class="form-control" name="email" placeholder="nombre@empresa.com" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Teléfono</label>
+          <input type="number" class="form-control" name="fono">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Nacionalidad</label>
+          <input type="text" class="form-control" name="nacionalidad">
+        </div>
+
+        <hr>
+
+        <h6 class="fw-bold text-danger mb-3">Datos laborales</h6>
+
+        <div class="mb-3">
+          <label class="form-label">Cargo</label>
+          <select class="form-select" name="cargo_id" required>
+            <option value="">Seleccione...</option>
+            {% for c in cargos %}
+              <option value="{{ c.id }}">{{ c.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Zona de trabajo</label>
+          <select class="form-select" name="zona_id">
+            <option value="">Seleccione...</option>
+            {% for z in zonas %}
+              <option value="{{ z.id }}">{{ z.nombre }} — {{ z.area }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button class="btn btn-danger" id="btnSaveEmpleado" type="submit">
+            Registrar empleado
+          </button>
+        </div>
+
+        <div id="msgEmpleado" class="mt-2 text-danger small"></div>
+
+      </form>
+    </div>
+  </div>
+
 
 </body>
 </html>
