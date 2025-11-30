@@ -40,10 +40,10 @@ urlpatterns = [
     path("dashboard-admin/crud-cargo/<int:pk>/editar/", v.cargo_edit, name="cargo_edit"),
     path("dashboard-admin/crud-cargo/<int:pk>/eliminar/", v.cargo_delete, name="cargo_delete"),
     
-    # # API
-    # path('api/login/', v.login_json, name='login_json'),
-    # path('api/logout/', v.logout_view, name='logout'),
-    # path('api/me/', v.me, name='me'),
+    # API
+    path('api/login/', v.login_json, name='login_json'),
+    path('api/logout/', v.logout_view, name='logout'),
+    path('api/me/', v.me, name='me'),
    
      # Zonas de trabajo (CRUD)
     path('dashboard-admin/zonas/', v.zonas_list, name='zonas_list'),
