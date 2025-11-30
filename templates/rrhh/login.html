@@ -29,37 +29,51 @@
     </div>
   </div>
 
-<script>
-document.getElementById('frmLogin').addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const email = document.getElementById('usuario').value.trim();
-  const password = document.getElementById('password').value;
-  const btn = document.getElementById('btnLogin');
-  const msg = document.getElementById('msg');
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('frmLogin');
+    if (!form) return;  // por si este script se carga en otra página
 
-  btn.disabled = true; btn.textContent = 'Ingresando...'; msg.textContent = '';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-  try {
-    const res = await fetch('/api/login/', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      credentials:'same-origin',
-      body: JSON.stringify({ email, password })
+      const email = document.getElementById('usuario').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('btnLogin');
+      const msg = document.getElementById('msg');
+
+      btn.disabled = true;
+      btn.textContent = 'Ingresando...';
+      msg.textContent = '';
+
+      try {
+        const res = await fetch('/api/login/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'same-origin',
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json().catch(() => ({ ok: false }));
+
+        if (!res.ok || !data.ok) {
+          msg.textContent = data.msg || 'Credenciales inválidas';
+          return;
+        }
+
+        // redirección por rol
+        window.location.href = (data.user.rol === 'admin')
+          ? '/dashboard-admin/'
+          : '/dashboard/';
+      } catch (e) {
+        msg.textContent = 'Error de conexión';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Iniciar Sesión';
+      }
     });
-    const data = await res.json().catch(()=>({ok:false}));
-    if (!res.ok || !data.ok) {
-      msg.textContent = data.msg || 'Credenciales inválidas';
-      return;
-    }
-    // redirección por rol
-    window.location.href = (data.user.rol === 'admin') ? '/dashboard-admin/' : '/dashboard/';
-  } catch (e) {
-    msg.textContent = 'Error de conexión';
-  } finally {
-    btn.disabled = false; btn.textContent = 'Iniciar Sesión';
-  }
-});
-</script>
+  });
+  </script>
 
 </body>
 </html>
